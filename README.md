@@ -1,0 +1,1 @@
+# plex-extensions-configuration
