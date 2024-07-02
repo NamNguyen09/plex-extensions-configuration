@@ -8,18 +8,23 @@
 	<Authors>Tom Lee</Authors>
 	<PackageProjectUrl>https://github.com/NamNguyen09/plex-extensions-configuration</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/NamNguyen09/plex-extensions-configuration</RepositoryUrl>
-	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 	<!-- Let's generate our own assembly info -->
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<OutputType>Library</OutputType>
 	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	<IsPackable>true</IsPackable>
+	<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE">
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

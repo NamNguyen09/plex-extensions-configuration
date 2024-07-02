@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Plex.Extensions.Configuration</id>
+		<dependencies>
+			<dependency id="Azure.Extensions.AspNetCore.Configuration.Secrets" version="[1.3.1,]" />
+			<dependency id="Azure.Identity" version="[1.12.0,]" />
+		</dependencies>
+		<title>Plex.Extensions.Configuration</title>
+		<version>8.0</version>
+		<authors>Tom Lee</authors>
+		<owners>Tom Lee</owners>
+		<projectUrl>https://github.com/NamNguyen09/plex-extensions-configuration</projectUrl>
+		<license type="file">LICENSE.md</license>
+		<requireLicenseAcceptance>true</requireLicenseAcceptance>
+		<description>This is a project containing configuration extensions that help to register appConfig.json file, load azure keyvault secrect and add to congiguration resource...</description>
+		<readme>README.md</readme>
+		<releaseNotes>$releasenotes$</releaseNotes>
+	</metadata>
+	<files>
+		<file src="..\LICENSE.md" target="LICENSE.md" />
+		<file src="..\README.md" target="README.md" />
+		<!-- Include other necessary files -->
+	</files>
+</package>

@@ -1,0 +1,78 @@
+name: $(Rev:r)
+variables:
+    #Global variables
+  #- name: revision
+    #value: $[counter(variables['minor'], 1)] # This will get reset every time minor gets bumped.
+  - group: shared_variables
+  - name: nugetVersion
+    value: '8.0.$(Build.BuildNumber)'
+  - name: buildPlatform
+    value: "Any CPU"
+  - name: buildConfiguration
+    value: "Release"
+  - name: agentPool
+    value: Azure Pipelines
+  - name: solution
+    value: "Plex.Extensions.Configuration.sln"
+    
+trigger:
+  branches:
+    include:
+      - master
+      #- release/*
+      #- develop
+      #- feature/*
+
+pool: '$(agentPool)'
+
+stages:
+  - stage: BuildAndPushToArtifact
+    displayName: "Build artifact for Plex.Extensions.Configuration and Push to Nuget.org"
+    jobs:
+      - job: BuildAndPush
+        displayName: "BuildAndPush:"
+        steps:
+          - task: NuGetToolInstaller@0
+            displayName: "Use NuGet 6.x"
+            inputs:
+              versionSpec: 6.x
+              
+          - task: UseDotNet@2
+            displayName: 'Install .NET Core SDK'
+            inputs:
+              version: '8.x'
+              performMultiLevelLookup: true
+              includePreviewVersions: false
+
+          - task: DotNetCoreCLI@2
+            displayName: 'DotNetCore: Nuget restore'
+            inputs:
+              command: 'restore'
+              projects: $(solution)
+              #feedsToUse: 'config'
+              #nugetConfigPath:  .nuget/NuGet.Config
+              
+          - task: DotNetCoreCLI@2
+            displayName: 'DotNetCore: Build'
+            inputs:
+              command: 'build'
+              projects: '**/*.csproj'
+              arguments: '--configuration $(buildConfiguration)'
+
+          - task: NuGetCommand@2
+            displayName: 'DotNetCore: Nuget pack'
+            inputs:
+              command: pack
+              packagesToPack: "**/*.csproj"
+              packDestination: "$(Build.ArtifactStagingDirectory)"
+              versionEnvVar: 'nugetVersion'
+              versioningScheme: 'byEnvVar'
+              buildProperties: 'releasenotes=$(Build.SourceVersionMessage)'  
+          
+          - task: NuGetCommand@2
+            displayName: 'DotNetCore: Nuget push'
+            inputs:
+              command: 'push'
+              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+              nuGetFeedType: 'external'
+              publishFeedCredentials: 'NuGetApiKey'
