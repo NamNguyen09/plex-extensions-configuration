@@ -1,12 +1,9 @@
 ﻿using System.Collections.Concurrent;
-using System.Data.Common;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.Primitives;
 
 namespace Plex.Extensions.Configuration;
 public static class ConfigurationExtensions
@@ -119,66 +116,6 @@ public static class ConfigurationExtensions
     {
         if (string.IsNullOrWhiteSpace(variableName)) return "";
         return Environment.ExpandEnvironmentVariables(variableName);
-    }
-    static string? GetHeaderValue(this HttpRequest? request, string key)
-    {
-        if (request == null || request.Headers == null) return null;
-
-        if (request.Headers.TryGetValue(key, out StringValues value))
-        {
-            return value;
-        }
-
-        return null;
-    }
-    static string? GetDatabaseName(this string connectionString,
-                                   ILogger? logger = null)
-    {
-        // Attempt to parse as key-value pair connection string
-        try
-        {
-            DbConnectionStringBuilder dbConnectionStringBuilder = new()
-            {
-                ConnectionString = connectionString
-            };
-
-            if (dbConnectionStringBuilder.ContainsKey("Database"))
-            {
-                return dbConnectionStringBuilder["Database"].ToString();
-            }
-            if (dbConnectionStringBuilder.ContainsKey("Initial Catalog")) // SQL Server alternative key
-            {
-                return dbConnectionStringBuilder["Initial Catalog"].ToString();
-            }
-        }
-        catch (Exception ex)
-        {
-            // Handle exception if it's not a standard key-value pair connection string
-            logger?.LogError(ex.Message, ex);
-        }
-
-        // Handle MongoDB connection string separately if it's not parsed by DbConnectionStringBuilder
-        if (connectionString.StartsWith("mongodb://", StringComparison.OrdinalIgnoreCase)
-            || connectionString.StartsWith("mongodb+srv://", StringComparison.OrdinalIgnoreCase))
-        {
-            return connectionString.GetMongoDbname();
-        }
-
-        return null;
-    }
-
-    static string? GetMongoDbname(this string connectionString)
-    {
-        // Regular expression to match the database name in the connection string
-        string pattern = @"mongodb(?:\+srv)?:\/\/[^\/]+\/([^\/?]+)";
-        Match match = Regex.Match(connectionString, pattern);
-
-        if (match.Success && match.Groups.Count > 1)
-        {
-            return match.Groups[1].Value;
-        }
-
-        return null;
     }
     static IConfigurationRoot? ExpandEnvironmentVariables(this IConfigurationRoot configurtion, dynamic builder)
     {
