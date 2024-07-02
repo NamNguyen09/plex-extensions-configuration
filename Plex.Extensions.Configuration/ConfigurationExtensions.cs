@@ -78,10 +78,12 @@ public static class ConfigurationExtensions
         }
         string evKey = $"{settingName}__{key}";
         string settingKey = $"{settingName}:{key}";
+        string settingsKey = $"{settingName}s:{key}";
 
         if (_keyValuePairs.ContainsKey(asSecretKey)) return _keyValuePairs[asSecretKey];
         if (_keyValuePairs.ContainsKey(evKey)) return _keyValuePairs[evKey];
         if (_keyValuePairs.ContainsKey(settingKey)) return _keyValuePairs[settingKey];
+        if (_keyValuePairs.ContainsKey(settingsKey)) return _keyValuePairs[settingsKey];
         if (_keyValuePairs.ContainsKey(key)) return _keyValuePairs[key];
 
         string? value = configuration[asSecretKey];
@@ -105,6 +107,14 @@ public static class ConfigurationExtensions
         {
             value = value.ToExpandEnvironmentVariable();
             _keyValuePairs.TryAdd(settingKey, value);
+            return value;
+        }
+
+        value = configuration.GetValue<string>(settingsKey);
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            value = value.ToExpandEnvironmentVariable();
+            _keyValuePairs.TryAdd(settingsKey, value);
             return value;
         }
 
