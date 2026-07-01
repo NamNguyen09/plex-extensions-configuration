@@ -23,7 +23,9 @@ trigger:
       #- develop
       #- feature/*
 
-pool: '$(agentPool)'
+pool: 
+  name: '$(agentPool)'
+  vmImage: 'ubuntu-22.04'
 
 stages:
   - stage: BuildAndPushToArtifact
