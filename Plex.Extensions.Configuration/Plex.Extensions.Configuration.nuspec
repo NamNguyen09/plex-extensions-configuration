@@ -1,10 +1,9 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Plex.Extensions.Configuration</id>
 		<dependencies>
-			<dependency id="Azure.Extensions.AspNetCore.Configuration.Secrets" version="[1.3.1,]" />
-			<dependency id="Azure.Identity" version="[1.12.0,]" />
+			<dependency id="Azure.Extensions.AspNetCore.Configuration.Secrets" version="[1.5.1,]" />
 		</dependencies>
 		<title>Plex.Extensions.Configuration</title>
 		<version>8.0</version>
