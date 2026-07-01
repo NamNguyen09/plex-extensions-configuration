@@ -1,3 +1,3 @@
-# Plex.Extensions.DbContext
+# Plex.Extensions.Configuration
 
-This is a project that help to register DbContext with denpendency injection using Microsoft dependency or Autofac.
+This is a project containing configuration extensions that help to register appConfig.json file, load azure keyvault secrect and add to congiguration resource...
