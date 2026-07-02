@@ -4,6 +4,7 @@
 		<id>Plex.Extensions.Configuration</id>
 		<dependencies>
 			<dependency id="Azure.Extensions.AspNetCore.Configuration.Secrets" version="[1.5.1,]" />
+			<dependency id="Azure.Identity" version="[1.21.0,]" />
 		</dependencies>
 		<title>Plex.Extensions.Configuration</title>
 		<version>8.0</version>
