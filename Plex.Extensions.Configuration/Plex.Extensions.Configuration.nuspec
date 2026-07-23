@@ -13,7 +13,7 @@
 		<projectUrl>https://github.com/NamNguyen09/plex-extensions-configuration</projectUrl>
 		<license type="file">LICENSE.md</license>
 		<requireLicenseAcceptance>true</requireLicenseAcceptance>
-		<description>A .NET 8 library that simplifies ASP.NET Core configuration setup. Loads JSON config files, integrates Azure Key Vault or Dapr secret store, expands environment variables in config values, and provides a multi-format configuration value resolver with caching.</description>
+		<description>A .NET 8 library that simplifies ASP.NET Core configuration setup. Loads JSON config files, integrates Azure Key Vault or Dapr secret store, expands environment variables in config values, and provides a multi-format configuration value resolver with caching. </description>
 		<readme>README.md</readme>
 		<releaseNotes>$releasenotes$</releaseNotes>
 	</metadata>
