@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Json;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration.Json;
 namespace Plex.Extensions.Configuration;
 public static class ConfigurationExtensions
 {
-    private static readonly ConcurrentDictionary<string, string> _keyValuePairs = new();
+    private static readonly ConcurrentDictionary<string, Lazy<string>> _keyValuePairs = new();
     public static async Task<WebApplicationBuilder> AddJsonConfigurationFilesAsync(this WebApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -80,47 +80,38 @@ public static class ConfigurationExtensions
         string settingKey = $"{settingName}:{key}";
         string settingsKey = $"{settingName}s:{key}";
 
-        if (_keyValuePairs.ContainsKey(asSecretKey)) return _keyValuePairs[asSecretKey];
-        if (_keyValuePairs.ContainsKey(evKey)) return _keyValuePairs[evKey];
-        if (_keyValuePairs.ContainsKey(settingKey)) return _keyValuePairs[settingKey];
-        if (_keyValuePairs.ContainsKey(settingsKey)) return _keyValuePairs[settingsKey];
-        if (_keyValuePairs.ContainsKey(key)) return _keyValuePairs[key];
+        if (_keyValuePairs.TryGetValue(asSecretKey, out var cached)) return cached.Value;
+        if (_keyValuePairs.TryGetValue(evKey, out cached)) return cached.Value;
+        if (_keyValuePairs.TryGetValue(settingKey, out cached)) return cached.Value;
+        if (_keyValuePairs.TryGetValue(settingsKey, out cached)) return cached.Value;
+        if (_keyValuePairs.TryGetValue(key, out cached)) return cached.Value;
 
         string? value = configuration[asSecretKey];
         if (!string.IsNullOrWhiteSpace(value))
         {
-            value = value.ToExpandEnvironmentVariable();
-            _keyValuePairs.TryAdd(asSecretKey, value);
-            return value;
+            return _keyValuePairs.GetOrAdd(asSecretKey, _ => new Lazy<string>(() => value.ToExpandEnvironmentVariable())).Value;
         }
 
         value = Environment.GetEnvironmentVariable(evKey);
         if (!string.IsNullOrWhiteSpace(value))
         {
-            value = value.ToExpandEnvironmentVariable();
-            _keyValuePairs.TryAdd(evKey, value);
-            return value;
+            return _keyValuePairs.GetOrAdd(evKey, _ => new Lazy<string>(() => value.ToExpandEnvironmentVariable())).Value;
         }
 
         value = configuration.GetValue<string>(settingKey);
         if (!string.IsNullOrWhiteSpace(value))
         {
-            value = value.ToExpandEnvironmentVariable();
-            _keyValuePairs.TryAdd(settingKey, value);
-            return value;
+            return _keyValuePairs.GetOrAdd(settingKey, _ => new Lazy<string>(() => value.ToExpandEnvironmentVariable())).Value;
         }
 
         value = configuration.GetValue<string>(settingsKey);
         if (!string.IsNullOrWhiteSpace(value))
         {
-            value = value.ToExpandEnvironmentVariable();
-            _keyValuePairs.TryAdd(settingsKey, value);
-            return value;
+            return _keyValuePairs.GetOrAdd(settingsKey, _ => new Lazy<string>(() => value.ToExpandEnvironmentVariable())).Value;
         }
 
         value = configuration.GetValue<string>(key) ?? defaultValue;
-        _keyValuePairs.TryAdd(key, value);
-        return value;
+        return _keyValuePairs.GetOrAdd(key, _ => new Lazy<string>(() => value)).Value;
     }
     static string ToExpandEnvironmentVariable(this string? variableName)
     {
